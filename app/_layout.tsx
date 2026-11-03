@@ -5,7 +5,14 @@ import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useEffect, useState } from "react";
+import { LogBox, Platform } from "react-native";
 import "react-native-reanimated";
+
+if (Platform.OS === "web") {
+  LogBox.ignoreLogs([
+    "Animated: `useNativeDriver` is not supported",
+  ]);
+}
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 // SplashScreen.preventAutoHideAsync();

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { Platform } from "react-native";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -21,6 +22,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       // console.log("got user in auth state changed: ", firebaseUser);
+      if (Platform.OS === "web" && typeof document !== "undefined") {
+        (document.activeElement as HTMLElement | null)?.blur?.();
+      }
       if (firebaseUser) {
         setUser({
           uid: firebaseUser.uid,

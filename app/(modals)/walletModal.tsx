@@ -1,5 +1,6 @@
 import {
   Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -90,6 +91,16 @@ const WalletModal = () => {
   };
 
   const showDeleteAlert = () => {
+    if (Platform.OS === "web" && typeof window !== "undefined") {
+      if (
+        window.confirm(
+          "Are you sure you want to do this?\nThis will remove all the transactions related to this wallet!"
+        )
+      ) {
+        onDelete();
+      }
+      return;
+    }
     Alert.alert(
       "Confirm",
       "Are you sure you want to do this?\nThis will remove all the transactions related to this wallet!",

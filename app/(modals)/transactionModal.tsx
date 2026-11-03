@@ -101,12 +101,20 @@ const TransactionModal = () => {
     if (file) setTransaction({ ...transaction, image: file });
   };
 
+  const showAlert = (title: string, message?: string) => {
+    if (Platform.OS === "web" && typeof window !== "undefined") {
+      window.alert(`${title}: ${message || ""}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
+
   const onSubmit = async () => {
     const { type, amount, description, category, date, walletId, image } =
       transaction;
 
     if (!walletId || !date || !amount || (type == "expense" && !category)) {
-      Alert.alert("Transaction", "Please fill all the fields");
+      showAlert("Transaction", "Please fill all the fields");
       return;
     }
 
@@ -145,11 +153,17 @@ const TransactionModal = () => {
     if (res.success) {
       router.back();
     } else {
-      Alert.alert("Transaction", res.msg);
+      showAlert("Transaction", res.msg);
     }
   };
 
   const showDeleteAlert = () => {
+    if (Platform.OS === "web" && typeof window !== "undefined") {
+      if (window.confirm("Are you sure you want to delete this transaction?")) {
+        onDeleteTransaction();
+      }
+      return;
+    }
     Alert.alert(
       "Confirm",
       "Are you sure you want to delete this transaction?",
@@ -297,39 +311,69 @@ const TransactionModal = () => {
             <Typo color={colors.neutral200} size={16} fontWeight={"500"}>
               Date
             </Typo>
-            {!showDatePicker && (
-              <Pressable
-                style={styles.dateInput}
-                onPress={() => setShowDatePicker(true)}
-              >
-                <Typo size={14}>
-                  {(transaction?.date as Date)?.toLocaleDateString()}
-                </Typo>
-              </Pressable>
-            )}
-
-            {showDatePicker && (
-              <View style={Platform.OS == "ios" && styles.iosDatePicker}>
-                <DateTimePicker
-                  themeVariant="dark"
-                  value={transaction.date as Date}
-                  textColor={colors.white}
-                  mode="date"
-                  display={Platform.OS == "ios" ? "spinner" : "default"}
-                  onChange={onDateChange}
-                />
-
-                {Platform.OS == "ios" && (
-                  <TouchableOpacity
-                    style={styles.datePickerButton}
-                    onPress={() => setShowDatePicker(false)}
-                  >
-                    <Typo size={15} fontWeight={"500"}>
-                      OK
-                    </Typo>
-                  </TouchableOpacity>
-                )}
+            {Platform.OS === "web" ? (
+              <View style={styles.dateInput}>
+                {React.createElement("input", {
+                  type: "date",
+                  value:
+                    transaction?.date instanceof Date &&
+                    !isNaN(transaction.date.getTime())
+                      ? transaction.date.toISOString().split("T")[0]
+                      : new Date().toISOString().split("T")[0],
+                  onChange: (e: any) => {
+                    const parsed = new Date(e.target.value + "T00:00:00");
+                    if (!isNaN(parsed.getTime())) {
+                      setTransaction({ ...transaction, date: parsed });
+                    }
+                  },
+                  style: {
+                    backgroundColor: "transparent",
+                    border: "none",
+                    color: colors.white,
+                    fontSize: 14,
+                    width: "100%",
+                    outline: "none",
+                    colorScheme: "dark",
+                  },
+                })}
               </View>
+            ) : (
+              <>
+                {!showDatePicker && (
+                  <Pressable
+                    style={styles.dateInput}
+                    onPress={() => setShowDatePicker(true)}
+                  >
+                    <Typo size={14}>
+                      {(transaction?.date as Date)?.toLocaleDateString()}
+                    </Typo>
+                  </Pressable>
+                )}
+
+                {showDatePicker && (
+                  <View style={Platform.OS == "ios" && styles.iosDatePicker}>
+                    <DateTimePicker
+                      themeVariant="dark"
+                      value={transaction.date as Date}
+                      textColor={colors.white}
+                      mode="date"
+                      display={Platform.OS == "ios" ? "spinner" : "default"}
+                      onChange={onDateChange}
+                    />
+
+                    {Platform.OS == "ios" && (
+                      <TouchableOpacity
+                        style={styles.datePickerButton}
+                        onPress={() => setShowDatePicker(false)}
+                      >
+                        <Typo size={15} fontWeight={"500"}>
+                          OK
+                        </Typo>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                )}
+              </>
             )}
           </View>
 

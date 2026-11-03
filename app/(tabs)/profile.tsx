@@ -1,12 +1,14 @@
 import {
   Alert,
+  Modal,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Typo from "@/components/Typo";
 import Header from "@/components/Header";
@@ -23,8 +25,9 @@ import { auth } from "@/config/firebase";
 import { getProfileImage } from "@/services/imageService";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const router = useRouter();
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
   const accountOptions: accountOptionType[] = [
     {
@@ -90,10 +93,21 @@ const Profile = () => {
   ];
 
   const handleLogout = async () => {
-    await signOut(auth);
+    try {
+      setLogoutModalVisible(false);
+      await signOut(auth);
+      setUser(null);
+      router.replace("/(auth)/welcome");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   const showLogoutAlert = () => {
+    if (Platform.OS === "web") {
+      setLogoutModalVisible(true);
+      return;
+    }
     Alert.alert("Confirm", "Are you sure you want to logout?", [
       {
         text: "Cancel",
@@ -185,6 +199,42 @@ const Profile = () => {
             );
           })}
         </View>
+
+        <Modal
+          visible={logoutModalVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setLogoutModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Typo size={20} fontWeight={"700"} color={colors.white}>
+                Confirm Logout
+              </Typo>
+              <Typo size={15} color={colors.neutral300}>
+                Are you sure you want to logout?
+              </Typo>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setLogoutModalVisible(false)}
+                >
+                  <Typo size={15} fontWeight={"600"} color={colors.white}>
+                    Cancel
+                  </Typo>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.logoutButton]}
+                  onPress={handleLogout}
+                >
+                  <Typo size={15} fontWeight={"600"} color={colors.white}>
+                    Logout
+                  </Typo>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </ScreenWrapper>
   );
@@ -251,5 +301,39 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: spacingX._10,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.65)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: spacingX._20,
+  },
+  modalContent: {
+    width: "100%",
+    maxWidth: 360,
+    backgroundColor: colors.neutral800,
+    borderRadius: radius._17,
+    padding: spacingX._20,
+    gap: spacingY._15,
+    borderWidth: 1,
+    borderColor: colors.neutral700,
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: spacingX._10,
+    marginTop: spacingY._5,
+  },
+  modalButton: {
+    paddingVertical: spacingY._10,
+    paddingHorizontal: spacingX._20,
+    borderRadius: radius._12,
+  },
+  cancelButton: {
+    backgroundColor: colors.neutral700,
+  },
+  logoutButton: {
+    backgroundColor: "#e11d48",
   },
 });

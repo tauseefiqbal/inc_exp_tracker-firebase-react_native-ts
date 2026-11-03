@@ -28,11 +28,13 @@ const Home = () => {
   const { user } = useAuth();
   const router = useRouter();
 
-  const constraints = [
-    where("uid", "==", user?.uid), // Filter by user ID
-    orderBy("date", "desc"), // Order by creation date in descending order
-    limit(30), // Limit the results to 50 transactions
-  ];
+  const constraints = user?.uid
+    ? [
+        where("uid", "==", user.uid), // Filter by user ID
+        orderBy("date", "desc"), // Order by creation date in descending order
+        limit(30), // Limit the results to 30 transactions
+      ]
+    : [];
 
   // Use the useFetchData hook with the 'transactions' collection and constraints
   const {

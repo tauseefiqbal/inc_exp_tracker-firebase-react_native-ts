@@ -1,4 +1,5 @@
 import {
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -26,8 +27,14 @@ const Button = ({
       </View>
     );
   }
+  const handlePress = () => {
+    if (Platform.OS === "web" && typeof document !== "undefined") {
+      (document.activeElement as HTMLElement | null)?.blur?.();
+    }
+    onPress?.();
+  };
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
+    <TouchableOpacity onPress={handlePress} style={[styles.button, style]}>
       {children}
     </TouchableOpacity>
   );

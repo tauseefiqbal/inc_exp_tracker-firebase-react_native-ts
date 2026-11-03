@@ -30,7 +30,9 @@ const SearchModal = () => {
   const { user } = useAuth();
   const [search, setSearch] = useState("");
 
-  const constraints = [where("uid", "==", user?.uid), orderBy("date", "desc")];
+  const constraints = user?.uid
+    ? [where("uid", "==", user.uid), orderBy("date", "desc")]
+    : [];
 
   // Use the useFetchData hook with the 'transactions' collection and constraints
   const {

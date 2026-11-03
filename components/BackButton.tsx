@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { Router, useRouter } from "expo-router";
 import { colors, radius } from "@/constants/theme";
@@ -8,9 +8,15 @@ import { BackButtonProps } from "@/types";
 
 const BackButton = ({ style, iconSize = 26 }: BackButtonProps) => {
   const router: Router = useRouter();
+  const handleBack = () => {
+    if (Platform.OS === "web" && typeof document !== "undefined") {
+      (document.activeElement as HTMLElement | null)?.blur?.();
+    }
+    router.back();
+  };
   return (
     <TouchableOpacity
-      onPress={() => router.back()}
+      onPress={handleBack}
       style={[styles.button, style && style]}
     >
       <CaretLeft

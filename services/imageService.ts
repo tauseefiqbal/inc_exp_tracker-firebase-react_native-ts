@@ -2,6 +2,7 @@ import { ResponseType } from "@/types";
 import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET } from "@/constants";
 import { storage } from "@/config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { Platform } from "react-native";
 import axios from "axios";
 
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
@@ -44,7 +45,7 @@ export const uploadFileToFirebase = async (
 };
 
 export const uploadFileToCloudinary = async (
-  file: { uri?: string } | string,
+  file: { uri?: string; file?: File | Blob; mimeType?: string; fileName?: string } | string,
   folderName: string
 ): Promise<ResponseType> => {
   try {
@@ -58,19 +59,39 @@ export const uploadFileToCloudinary = async (
 
     if (file && file.uri) {
       const formData = new FormData();
-      formData.append("file", {
-        uri: file?.uri,
-        type: "image/jpeg",
-        name: file?.uri?.split("/").pop() || "file.jpg",
-      } as any);
+
+      if (Platform.OS === "web") {
+        if (file.file) {
+          formData.append("file", file.file);
+        } else if (file.uri.startsWith("data:")) {
+          formData.append("file", file.uri);
+        } else {
+          const res = await fetch(file.uri);
+          const blob = await res.blob();
+          formData.append("file", blob, file.fileName || "file.jpg");
+        }
+      } else {
+        formData.append("file", {
+          uri: file?.uri,
+          type: file?.mimeType || "image/jpeg",
+          name: file?.fileName || file?.uri?.split("/").pop() || "file.jpg",
+        } as any);
+      }
+
       formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
       formData.append("folder", folderName);
 
-      const response = await axios.post(CLOUDINARY_UPLOAD_URL, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        CLOUDINARY_UPLOAD_URL,
+        formData,
+        Platform.OS === "web"
+          ? undefined
+          : {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+      );
 
       // Return the success response
       return {

@@ -17,9 +17,14 @@ const useFetchData = <T>(
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (!collectionName) return;
+    if (!collectionName || !user?.uid || constraints.length === 0) {
+      setData([]);
+      setLoading(false);
+      return;
+    }
 
     const collectionRef = collection(firestore, collectionName);
     const q = query(collectionRef, ...constraints);
@@ -42,8 +47,7 @@ const useFetchData = <T>(
     );
 
     return () => unsubscribe();
-  }, []);
-  //   }, [collectionName, constraints]);
+  }, [collectionName, user?.uid]);
 
   return { data, loading, error };
 };
