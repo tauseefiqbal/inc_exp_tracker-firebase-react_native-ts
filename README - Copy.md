@@ -1,6 +1,6 @@
 # Income & Expense Tracker App
 
-A cross-platform mobile and web personal finance application built with **React Native**, **Expo Router**, **TypeScript**, **Firebase (Auth & Firestore)**, and **Cloudinary**. Track multiple wallets, log daily income and expenses with receipt images, search transactions in real time, and visualize financial trends across weekly, monthly, and yearly bar charts.
+A cross-platform mobile (Android & iOS) and web personal finance application built with **React Native**, **Expo Router**, **TypeScript**, **Firebase (Auth & Firestore)**, and **Cloudinary**. Track multiple wallets, log daily income and expenses with receipt images, search transactions in real time, and visualize financial trends across weekly, monthly, and yearly bar charts.
 
 ---
 
@@ -58,12 +58,12 @@ A cross-platform mobile and web personal finance application built with **React 
 
 ### Authentication & User Management
 - ✅ **Email & Password Authentication**: Secure user registration and login powered by Firebase Authentication (`signInWithEmailAndPassword` and `createUserWithEmailAndPassword`).
-- ✅ **Persistent Auth Session**: Automatic session state persistence across app restarts using `@react-native-async-storage/async-storage` and `onAuthStateChanged`.
-- ✅ **Protected Route Navigation**: Automatic redirection between `(auth)` welcome/login/register screens and `(tabs)` main application screens via Expo Router.
-- ✅ **Customizable User Profiles**: Update display name and upload a custom profile avatar from the device gallery.
+- ✅ **Platform-Specific Auth Persistence**: Seamless session state persistence across native mobile restarts via `@react-native-async-storage/async-storage` (`config/firebase.ts`) and browser storage on web (`config/firebase.web.ts`).
+- ✅ **Protected Route Navigation**: Automatic redirection between `(auth)` welcome/login/register screens and `(tabs)` main application screens via Expo Router (`onAuthStateChanged`).
+- ✅ **Customizable User Profiles**: Update display name and upload a custom profile avatar from the device gallery or file picker.
 
 ### Multi-Wallet Management
-- ✅ **Unlimited Custom Wallets**: Create multiple wallets (e.g., Main Cash, Bank Account, Salary, Savings) with custom icons/images.
+- ✅ **Unlimited Custom Wallets**: Create multiple wallets/vaults (e.g., Main Cash, Salary, Freelancing, Savings) with custom icons/images.
 - ✅ **Aggregated Total Balance**: Real-time calculation of overall net balance, total income, and total expenses across all user wallets on the Home card and Wallet tab.
 - ✅ **Automatic Wallet Balance Synchronization**: Creating, editing, or deleting a transaction automatically recalculates and updates the linked wallet's `amount`, `totalIncome`, and `totalExpenses`.
 - ✅ **Cascading Wallet Deletion**: Deleting a wallet automatically batch-deletes all associated transactions in Firestore to maintain data integrity.
@@ -73,7 +73,7 @@ A cross-platform mobile and web personal finance application built with **React 
 - ✅ **12 Predefined Expense Categories**: Categorize spending across Groceries, Rent, Utilities, Transportation, Entertainment, Dining, Health, Insurance, Savings, Clothing, Personal, and Others—each with distinct Phosphor icons and color badges.
 - ✅ **Dedicated Income Logging**: Log income entries directly into any wallet with automatic balance crediting.
 - ✅ **Receipt Image Attachments**: Attach optional receipt or invoice photos to any transaction using the device image picker and Cloudinary upload pipeline.
-- ✅ **Cross-Platform Date Picker**: Select transaction dates seamlessly using native Android/iOS date pickers (`@react-native-community/datetimepicker`).
+- ✅ **Cross-Platform Date Picker**: Select transaction dates seamlessly using `@react-native-community/datetimepicker`.
 - ✅ **Full Transaction CRUD**: View, edit, or delete existing transactions; changing transaction type, amount, or wallet automatically reverts old wallet balances and applies new ones.
 
 ### Analytics & Interactive Statistics
@@ -88,6 +88,7 @@ A cross-platform mobile and web personal finance application built with **React 
 
 ### Cloud Media & Cross-Platform UI
 - ✅ **Cloudinary Unsigned Image Uploads**: Automatic cloud hosting for user avatars, wallet icons, and transaction receipts organized into dedicated Cloudinary folders (`users`, `wallets`, `transactions`).
+- ✅ **Native & Web Compatibility**: Runs natively on Android and iOS via Expo and in modern web browsers via `react-native-web` and Metro static bundling.
 - ✅ **Smooth Animations & Transitions**: Fluid screen and list entry animations powered by `react-native-reanimated` (`FadeInDown` spring animations).
 - ✅ **Responsive Scaling**: Adaptive layout scaling across phones, tablets, and web viewports using custom `scale` and `verticalScale` utilities.
 
@@ -96,13 +97,13 @@ A cross-platform mobile and web personal finance application built with **React 
 ## Tech Stack
 
 ### Frontend & Mobile Framework
-- **Framework**: [React Native](https://reactnative.dev/) (`0.81.5`) & [React](https://react.dev/) (`19.1.0`)
+- **Framework**: [React Native](https://reactnative.dev/) (`0.81.5`), [React](https://react.dev/) (`19.1.0`), & [React Native Web](https://necolas.github.io/react-native-web/) (`^0.21.0`)
 - **Platform & Bundler**: [Expo SDK 54](https://expo.dev/) (`^54.0.21`) with Metro Bundler & New Architecture enabled
 - **Routing**: [Expo Router](https://docs.expo.dev/router/introduction/) (`~6.0.14`) with typed file-based routing (`(auth)`, `(tabs)`, `(modals)`)
 - **Language**: [TypeScript](https://www.typescriptlang.org/) (`~5.3.3`)
 
 ### Backend & Cloud Services
-- **Authentication**: [Firebase Authentication](https://firebase.google.com/docs/auth) (Email/Password provider with React Native AsyncStorage persistence)
+- **Authentication**: [Firebase Authentication](https://firebase.google.com/docs/auth) (Email/Password provider with native AsyncStorage & web auth persistence)
 - **Database**: [Cloud Firestore](https://firebase.google.com/docs/firestore) (`firebase ^11.0.2`) for real-time NoSQL document storage (`users`, `wallets`, `transactions`)
 - **Media Storage**: [Cloudinary REST API](https://cloudinary.com/) via `axios` (`^1.7.8`) for unsigned image uploads
 - **Local Storage**: `@react-native-async-storage/async-storage` (`2.2.0`)
@@ -112,26 +113,26 @@ A cross-platform mobile and web personal finance application built with **React 
 - **Animations**: `react-native-reanimated` (`~4.1.1`), `react-native-gesture-handler` (`~2.28.0`), `react-native-worklets` (`0.5.1`)
 - **Icons**: `phosphor-react-native` (`^2.2.1`) & `@expo/vector-icons` (`^15.0.3`)
 - **Form Controls**: `react-native-element-dropdown` (`^2.12.2`), `@react-native-community/datetimepicker` (`8.4.4`), `@react-native-segmented-control/segmented-control` (`2.5.7`)
-- **Media & Image Handling**: `expo-image` (`~3.0.10`), `expo-image-picker` (`~17.0.8`), `expo-Linear-gradient` (`~15.0.7`), `expo-blur` (`~15.0.7`)
+- **Media & Image Handling**: `expo-image` (`~3.0.10`), `expo-image-picker` (`~17.0.8`), `expo-linear-gradient` (`~15.0.7`), `expo-blur` (`~15.0.7`)
 - **Lists**: `@shopify/flash-list` (`2.0.2`)
 
 ### Development & Build Tooling
 - **Testing**: `jest` (`^29.2.1`), `jest-expo` (`~54.0.0`), `react-test-renderer` (`19.1.0`)
 - **Linting**: `expo lint`
-- **Cloud Builds**: Expo Application Services ([EAS Build](https://docs.expo.dev/build/introduction/)) configured via `eas.json`
+- **Cloud Builds**: Expo Application Services ([EAS Build](https://docs.expo.dev/build/introduction/)) configured via [`eas.json`](./eas.json)
 
 ---
 
 ## Deployment
 
 ### App Live URL (APP URL)
-- **Live Web / App URL (`APP URL`)**: `https://expense-tracker-app.expo.app` *(Replace with your production Vercel / Netlify / EAS Hosting URL once deployed)*
+- **Live Web / App URL (`APP URL`)**: `https://expense-tracker-app.expo.app` *(Replace with your production EAS Hosting / Vercel / Netlify URL once deployed)*
 - **Expo Project Slug**: `expense-tracker-app`
 - **Android Package ID**: `com.tauseefiqbal.expensetrackerapp`
 - **EAS Project ID**: `c0809b04-ee4e-40ee-b5dd-142bb6cb1ddf`
 
 ### EAS Mobile Builds (Android & iOS)
-The project includes preconfigured profiles in [`eas.json`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/eas.json):
+The project includes preconfigured profiles in [`eas.json`](./eas.json):
 
 ```bash
 # Install EAS CLI globally
@@ -148,7 +149,7 @@ eas build --platform all --profile production
 ```
 
 ### Web Static Deployment
-Because `app.json` configures `"web": { "bundler": "metro", "output": "static" }`, you can export and deploy the web bundle to EAS Hosting, Vercel, or Netlify:
+Because [`app.json`](./app.json) configures `"web": { "bundler": "metro", "output": "static" }` and [`config/firebase.web.ts`](./config/firebase.web.ts) handles web Firebase initialization, you can export and deploy the web bundle to EAS Hosting, Vercel, or Netlify:
 
 ```bash
 # Export static web build to the dist/ folder
@@ -163,7 +164,7 @@ eas deploy
 ## Test and Admin Users Credentials
 
 > [!NOTE]
-> The app uses Firebase Email/Password Authentication. You can sign in using the pre-configured test credentials below, register a new account directly from the Sign-Up screen, or seed the demo database documents using [`scripts/seedDatabase.js`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/scripts/seedDatabase.js).
+> The app uses Firebase Email/Password Authentication. You can sign in using the pre-configured test credentials below, register a new account directly from the Sign-Up screen, or seed the demo database documents using [`scripts/seedDatabase.js`](./scripts/seedDatabase.js).
 
 ### Regular Test User Credentials
 | Field | Value |
@@ -171,12 +172,12 @@ eas deploy
 | **Role** | Regular User |
 | **Name** | Demo User |
 | **Email** | `demo@expensetracker.app` |
-| **Password** | `Demo@12345` *(or create via Register screen if testing on a fresh Firebase instance)* |
+| **Password** | `Demo@12345` *(or register via the Sign-Up screen if testing on a fresh Firebase project)* |
 | **Sample Wallet** | `Main Cash Wallet` (`$1,500.00` balance) |
 
 ### Admin / Demo Seeded User Credentials
 > [!IMPORTANT]
-> Administrative operations (database seeding, security rule deployment, and user management) are performed via the Firebase Console and the Node.js Admin/Seed CLI rather than a separate in-app role, as Firestore rules strictly isolate user data (`request.auth.uid == userId`).
+> Administrative operations (database seeding, security rule deployment, and user management) are performed via the Firebase Console and the Node.js Seed CLI rather than a separate in-app screen, as Firestore rules strictly isolate user data (`request.auth.uid == userId`).
 
 | Field | Value |
 | :--- | :--- |
@@ -199,9 +200,9 @@ eas deploy
 ### 2. Creating & Managing Wallets
 1. Navigate to the **Wallet** tab (`/(tabs)/wallet`) from the bottom navigation bar.
 2. Tap the green **Plus (`+`)** icon next to **My Wallets** to open the **New Wallet Modal** (`/(modals)/walletModal`).
-3. Enter a **Wallet Name** (e.g., *Salary*, *Main Cash*, *Savings*) and upload a **Wallet Icon** image from your device.
+3. Enter a **Wallet Name** (e.g., *Salary*, *Freelancing*, *Main Cash*, *Savings*) and upload a **Wallet Icon** image from your device (sample images [`salary.jpeg`](./salary.jpeg) and [`Freelancing.jpeg`](./Freelancing.jpeg) are also included in the root folder).
 4. Tap **Add Wallet**. Your new wallet appears in the list with an initial balance of `$0.00`.
-5. To edit or delete an existing wallet, tap on the wallet item in the list, modify its name/icon or tap the red **Trash** button (deleting a wallet also removes all transactions linked to it).
+5. To edit or delete an existing wallet, tap on the wallet item in the list, modify its name/icon, or tap the red **Trash** button (deleting a wallet also removes all transactions linked to it).
 
 ### 3. Recording Income & Expenses
 1. On the **Home** tab (`/(tabs)/index`), tap the floating green **Plus (`+`)** button in the bottom-right corner to open the **Add Transaction Modal** (`/(modals)/transactionModal`).
@@ -234,7 +235,7 @@ eas deploy
 ## How to Use App for Admin User
 
 ### 1. Seeding Initial Database Collections
-Admins and developers can initialize or reset sample documents in the Firestore collections (`users`, `wallets`, `transactions`) using the included seed script [`scripts/seedDatabase.js`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/scripts/seedDatabase.js):
+Admins and developers can initialize or reset sample documents in the Firestore collections (`users`, `wallets`, `transactions`) using the included seed script [`scripts/seedDatabase.js`](./scripts/seedDatabase.js):
 
 ```bash
 node scripts/seedDatabase.js
@@ -246,12 +247,12 @@ This creates:
 - `transactions/sample_transaction_01` (`expense` of `$45.50` in `groceries`)
 
 ### 2. Managing Firestore Security Rules & Indexes
-Firestore security rules ([`firestore.rules`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/firestore.rules)) and composite indexes ([`firestore.indexes.json`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/firestore.indexes.json)) are maintained at the project root.
+Firestore security rules ([`firestore.rules`](./firestore.rules)) and composite indexes ([`firestore.indexes.json`](./firestore.indexes.json)) are maintained at the project root.
 - Deploy updated security rules and composite indexes via Firebase CLI:
   ```bash
   firebase deploy --only firestore:rules,firestore:indexes
   ```
-- Deploy storage rules ([`storage.rules`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/storage.rules)) if using Firebase Storage alongside Cloudinary:
+- Deploy storage rules ([`storage.rules`](./storage.rules)) if using Firebase Storage alongside Cloudinary:
   ```bash
   firebase deploy --only storage
   ```
@@ -273,9 +274,10 @@ Firestore security rules ([`firestore.rules`](file:///e:/CRTST/MOBILE-APPS/WORKO
 ### System Requirements
 - **Node.js**: `v18.x` or `v20.x+` (LTS recommended)
 - **Package Manager**: `npm` (comes with Node.js) or `yarn`
-- **Mobile Runtime**:
+- **Mobile / Web Runtime**:
   - **Expo Go** app on iOS / Android physical device, **or**
-  - **Android Studio** (Android Emulator) / **Xcode** (iOS Simulator on macOS)
+  - **Android Studio** (Android Emulator) / **Xcode** (iOS Simulator on macOS), **or**
+  - Any modern web browser (Chrome, Edge, Safari, Firefox)
 
 ### Step-by-Step Setup
 1. **Clone the repository and navigate to the project root**:
@@ -292,7 +294,7 @@ Firestore security rules ([`firestore.rules`](file:///e:/CRTST/MOBILE-APPS/WORKO
    ```
 
 3. **Configure environment variables**:
-   Copy `.env.example` to `.env` and fill in your Firebase and Cloudinary credentials:
+   Copy [`.env.example`](./.env.example) to `.env` and fill in your Firebase and Cloudinary credentials:
    ```bash
    cp .env.example .env
    ```
@@ -310,7 +312,7 @@ Firestore security rules ([`firestore.rules`](file:///e:/CRTST/MOBILE-APPS/WORKO
 
 ## Environment Variables & Configuration
 
-Create a `.env` file in the root directory based on [`.env.example`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/.env.example):
+Create a `.env` file in the root directory based on [`.env.example`](./.env.example):
 
 ```env
 # Firebase Configuration
@@ -327,14 +329,14 @@ EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_upload_preset
 ```
 
 ### Firebase Configuration
-Firebase is initialized in [`config/firebase.ts`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/config/firebase.ts). To set up your own Firebase project:
+Firebase is initialized in [`config/firebase.ts`](./config/firebase.ts) (native Android/iOS) and [`config/firebase.web.ts`](./config/firebase.web.ts) (Web). To set up your own Firebase project:
 1. Create a project at [console.firebase.google.com](https://console.firebase.google.com/).
 2. Register a Web App and copy the configuration keys into your `.env` file.
 3. Under **Authentication > Sign-in method**, enable the **Email/Password** provider.
-4. Under **Firestore Database**, create a database and deploy [`firestore.rules`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/firestore.rules) and [`firestore.indexes.json`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/firestore.indexes.json).
+4. Under **Firestore Database**, create a database and deploy [`firestore.rules`](./firestore.rules) and [`firestore.indexes.json`](./firestore.indexes.json).
 
 ### Cloudinary Configuration
-Cloudinary credentials are read in [`constants/index.ts`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/constants/index.ts) and used by [`services/imageService.ts`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/services/imageService.ts):
+Cloudinary credentials are read in [`constants/index.ts`](./constants/index.ts) and used by [`services/imageService.ts`](./services/imageService.ts):
 1. Create an account at [cloudinary.com](https://cloudinary.com/).
 2. Copy your **Cloud Name** into `EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME`.
 3. Go to **Settings > Upload > Upload Presets**, create an **Unsigned** upload preset, and set its name in `EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET`.
@@ -352,7 +354,7 @@ Cloudinary credentials are read in [`constants/index.ts`](file:///e:/CRTST/MOBIL
 | **`transactions`** | `id` (string), `type` (`"income"` \| `"expense"`), `amount` (number), `category` (string), `description` (string), `date` (Timestamp), `image` (string \| null), `uid` (string), `walletId` (string) | Stores individual income and expense transactions linked to a user and wallet. |
 
 ### Security Rules Overview
-Defined in [`firestore.rules`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/firestore.rules):
+Defined in [`firestore.rules`](./firestore.rules):
 - **`/users/{userId}`**: Read and write permitted only when `request.auth != null && request.auth.uid == userId`.
 - **`/wallets/{walletId}`**: Read, create, update, and delete permitted only when the authenticated user's `uid` matches the wallet document's `uid`.
 - **`/transactions/{transactionId}`**: Read, create, update, and delete permitted only when the authenticated user's `uid` matches the transaction document's `uid`.
@@ -371,7 +373,7 @@ react-native-inc_and_exp_tracker/
 │   └── index.tsx                 # Initial splash / entry redirect screen
 ├── assets/                       # Fonts and static images/icons
 ├── components/                   # Reusable UI components (HomeCard, TransactionList, Input, Button, etc.)
-├── config/                       # Firebase initialization (firebase.ts)
+├── config/                       # Firebase initialization (firebase.ts for native, firebase.web.ts for web)
 ├── constants/                    # Theme colors/spacing, expense categories, Cloudinary constants
 ├── contexts/                     # React Context for authentication (authContext.tsx)
 ├── hooks/                        # Custom Firestore real-time subscription hook (useFetchData.ts)
@@ -405,5 +407,5 @@ react-native-inc_and_exp_tracker/
 
 ## License
 
-This project is licensed under the terms specified in [`LICENSE.txt`](file:///e:/CRTST/MOBILE-APPS/WORKON/react-native-inc_and_exp_tracker/LICENSE.txt) (Personal / Non-Commercial Use, Original Author: Code With Nomi).
+This project is licensed under the terms specified in [`LICENSE.txt`](./LICENSE.txt) (Personal / Non-Commercial Use, Original Author: Code With Nomi).
 
